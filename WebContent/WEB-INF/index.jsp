@@ -4,9 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%
-	ResultSet rs = (ResultSet) request.getAttribute("rs");
-%>
+<%@page import="todo.utils.HTMLUtils"%>
 
 <jsp:include page="header.jsp" />
 
@@ -36,21 +34,17 @@
 			<th>期限</th>
 		</tr>
 
-<%
-	//内容を出力
-		while(rs.next()){
-%>
+		<c:forEach var="todo" items="${list}">
 			<tr>
-				<td><%=rs.getString("id") %></td>
-				<td><a href="update.html"><%=rs.getString("title") %></a></td>
-				<td><%=rs.getString("imp") %></td>
-				<td><%=rs.getString("limit_date") %></td>
-
+				<td>${todo.id}</td>
+				<td><a href="update.html">${todo.title}</a></td>
+				<td>${todo.imp}</td>
+				<td>
+					${HTMLUtils.dateFormat(todo.limit_date)}
+				</td>
 			</tr>
+		</c:forEach>
 
-<%
-		}
-%>
 
 	</table>
 	<a href="entry.html" class="btn btn-primary">追 加</a>
