@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import todo.utils.DBUtils;
+
 @WebServlet("/index.html")
 public class IndexServlet extends HttpServlet {
 	@Override
@@ -25,7 +27,7 @@ public class IndexServlet extends HttpServlet {
 		try {
 			//データベース接続
 
-			con = todo.utils.DBUtils.getConnection();
+			con = DBUtils.getConnection();
 
 			//SQL
 			sql = "SELECT id, title, imp, limit_date FROM list ORDER BY id";
@@ -46,9 +48,9 @@ public class IndexServlet extends HttpServlet {
 			throw new ServletException(e);
 		}finally {
 			try{
-				todo.utils.DBUtils.close(ps);
-				todo.utils.DBUtils.close(rs);
-				todo.utils.DBUtils.close(con);
+				DBUtils.close(ps);
+				DBUtils.close(rs);
+				DBUtils.close(con);
 			}catch(Exception e){
 
 			}
