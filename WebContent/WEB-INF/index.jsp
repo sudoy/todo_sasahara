@@ -1,7 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*,javax.naming.*,javax.sql.*,java.text.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<%
+	ResultSet rs = (ResultSet) request.getAttribute("rs");
+%>
 
 <jsp:include page="header.jsp" />
 
@@ -31,29 +36,23 @@
 			<th>期限</th>
 		</tr>
 
-		<tr>
-			<td>1</td>
-			<td><a href="update.html">テスト</a></td>
-			<td>★★★</td>
-			<td>2015/06/20</td>
+<%
+	//内容を出力
+		while(rs.next()){
+%>
+			<tr>
+				<td><%=rs.getString("id") %></td>
+				<td><a href="update.html"><%=rs.getString("title") %></a></td>
+				<td><%=rs.getString("imp") %></td>
+				<td><%=rs.getString("limit_date") %></td>
 
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><a href="update.html">テスト2</a></td>
-			<td>★</td>
-			<td>2015/06/21</td>
+			</tr>
 
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><a href="update.html">テストa</a></td>
-			<td>★★</td>
-			<td>2015/06/25</td>
+<%
+		}
+%>
 
-		</tr>
 	</table>
-
-	<a href="entry.html" class="btn btn-primary">追加</a>
+	<a href="entry.html" class="btn btn-primary">追 加</a>
 
 <jsp:include page="footer.jsp" />

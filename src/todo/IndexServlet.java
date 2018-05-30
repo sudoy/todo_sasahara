@@ -1,6 +1,9 @@
 package todo;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +17,44 @@ public class IndexServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		//フォワード
-		getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(req, resp);
+		Connection con = null;
+		PreparedStatement ps = null;
+		String sql = null;
+		ResultSet rs = null;
+
+		try {
+			//データベース接続
+
+			con = todo.utils.DBUtils.getConnection();
+
+			//SQL
+			sql = "SELECT id, title, imp, limit_date FROM list ORDER BY id";
+
+			//SELECT命令の準備
+			ps = con.prepareStatement(sql);
+
+			//SELECTを実行
+			rs = ps.executeQuery();
+
+			//rsをJSPへ渡す
+			req.setAttribute("rs", rs);
+
+			//フォワード
+			getServletContext().getRequestDispatcher("/WEB-INF/index.jsp").forward(req, resp);
+
+		}catch(Exception e){
+			throw new ServletException(e);
+		}finally {
+			try{
+				todo.utils.DBUtils.close(ps);
+				todo.utils.DBUtils.close(rs);
+				todo.utils.DBUtils.close(con);
+			}catch(Exception e){
+
+			}
+		}
+
+
 	}
 
 }

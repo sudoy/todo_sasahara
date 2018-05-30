@@ -24,19 +24,19 @@
 		</ul>
 	</div>
 
-	<p>登録フォーム</p><hr>
+	<strong>登録フォーム</strong><hr>
 
 	<form class="form-horizontal" action="entry.html" method="post">
 		<div class="form-group">
 			<label for="title" class="col-sm-2 control-label">題名</label>
-			<div class="col-sm-offset-2">
+			<div class="col-sm-10">
 				<input type="text" class="form-control" id="title" placeholder="題名" value="">
 			</div>
 		</div>
 
 		<div class="form-group">
 			<label for="detail" class="col-sm-2 control-label">詳細</label>
-			<div class="col-sm-offset-2">
+			<div class="col-sm-10">
 				<textarea class="form-control" rows="3" id="detail" placeholder="詳細"></textarea>
 			</div>
 		</div>
@@ -68,15 +68,15 @@
 
 		<div class="form-group">
 			<label for="limit" class="col-sm-2 control-label">期限</label>
-			<div class="col-sm-offset-2">
+			<div class="col-sm-10">
 				<input type="text" class="form-control" id="limit" placeholder="期限" value="">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<div class="col-sm-offset-2">
+			<div class="col-sm-offset-2 col-sm-10">
 				<a href="index.html" class="btn btn-default"> キャンセル</a>
-				<a href="index.html" class="btn btn-primary">追加</a>
+				<a href="index.html" class="btn btn-primary">追 加</a>
 			</div>
 		</div>
 
