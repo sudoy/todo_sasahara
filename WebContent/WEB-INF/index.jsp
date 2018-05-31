@@ -38,7 +38,8 @@
 				<td><a href="update.html">${todo.title}</a></td>
 				<td>${todo.imp}</td>
 				<td>
-					${HTMLUtils.dateFormat(todo.limit_date)}
+					${HTMLUtils.dateFormat(todo.limitDate)}
+
 				</td>
 			</tr>
 		</c:forEach>

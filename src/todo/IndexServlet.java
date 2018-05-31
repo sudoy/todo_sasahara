@@ -64,8 +64,8 @@ public class IndexServlet extends HttpServlet {
 			throw new ServletException(e);
 		}finally {
 			try{
-				DBUtils.close(ps);
 				DBUtils.close(rs);
+				DBUtils.close(ps);
 				DBUtils.close(con);
 			}catch(Exception e){
 
