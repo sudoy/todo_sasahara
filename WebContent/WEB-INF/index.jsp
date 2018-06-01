@@ -36,7 +36,7 @@
 		<c:forEach var="todo" items="${list}">
 			<tr>
 				<td>${todo.id}</td>
-				<td><a href="update.html">${todo.title}</a></td>
+				<td><a href="update.html?id=${todo.id }">${todo.title}</a></td>
 				<td>${todo.imp}</td>
 				<td>
 					${HTMLUtils.dateFormat(todo.limitDate)}
