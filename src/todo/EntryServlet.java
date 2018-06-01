@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,24 +21,23 @@ import todo.utils.DBUtils;
 @WebServlet("/entry.html")
 public class EntryServlet extends HttpServlet {
 
-	private boolean check;
 
-	private void validate(HttpServletRequest req, HttpServletResponse resp)
+	private List<String> validate(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException{
 
-		check = false;
+		List<String> errors = new ArrayList<>();
 
 		//題名チェック
 		if(req.getParameter("title").equals("")) {
 
-			check = true;
+			errors.add("題名は必須入力です。");
 
 		}
 
 		//文字数多い
 		if(req.getParameter("title").length() > 100){
 
-			check = true;
+			errors.add("題名は100文字以内にしてください。");
 
 		}
 
@@ -44,7 +45,8 @@ public class EntryServlet extends HttpServlet {
 		if(	!(req.getParameter("imp").equals("★") ||
 			req.getParameter("imp").equals("★★") ||
 			req.getParameter("imp").equals("★★★")) ) {
-			check = true;
+
+			errors.add("不正なアクセスです。");
 
 		}
 
@@ -54,12 +56,13 @@ public class EntryServlet extends HttpServlet {
 				DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
 			    format.parse(req.getParameter("limit_date"));
 
-
 			}catch(ParseException p) {
-				check = true;
+
+				errors.add("期限は「YYYY/MM/DD」形式で入力して下さい。");
 
 			}
 		}
+		return errors;
 
 	}
 
@@ -77,12 +80,12 @@ public class EntryServlet extends HttpServlet {
 
 		req.setCharacterEncoding("utf-8");
 
-		//バリデーション
-		validate(req, resp);
+		List<String> errors = validate(req, resp);
 
 
-		if(check == true) {
+		if(errors.size() > 0) {
 			//エラー処理
+			req.setAttribute("errors", errors);
 			getServletContext().getRequestDispatcher("/WEB-INF/entry.jsp").forward(req, resp);
 		}else {
 
@@ -90,61 +93,59 @@ public class EntryServlet extends HttpServlet {
 			PreparedStatement ps = null;
 			String sql = null;
 
-				//正規処理
+			//正規処理
+			try{
+				//データベース接続
+				con = DBUtils.getConnection();
+
+				if(req.getParameter("limit_date").equals("")){
+
+					//SQL
+					sql = "INSERT INTO list(title, detail, imp)VALUES(?,?,?)";
+
+					//INSERT準備
+					ps = con.prepareStatement(sql);
+
+					//INSERTにデータをセット
+					ps.setString(1, req.getParameter("title"));
+					ps.setString(2, req.getParameter("detail"));
+					ps.setString(3, req.getParameter("imp"));
+
+				}else {
+
+					//SQL
+					sql = "INSERT INTO list(title, detail, imp, limit_date)VALUES(?,?,?,?)";
+
+					//INSERT準備
+					ps = con.prepareStatement(sql);
+
+					//INSERTにデータをセット
+					ps.setString(1, req.getParameter("title"));
+					ps.setString(2, req.getParameter("detail"));
+					ps.setString(3, req.getParameter("imp"));
+					ps.setString(4, req.getParameter("limit_date"));
+
+				}
+
+				//INSERT実行
+				ps.executeUpdate();
+
+			}catch(Exception e){
+				throw new ServletException(e);
+
+			}finally{
+
 				try{
-					//データベース接続
-					con = DBUtils.getConnection();
-
-					if(req.getParameter("limit_date").equals("")){
-
-						//SQL
-						sql = "INSERT INTO list(title, detail, imp)VALUES(?,?,?)";
-
-						//INSERT準備
-						ps = con.prepareStatement(sql);
-
-						//INSERTにデータをセット
-						ps.setString(1, req.getParameter("title"));
-						ps.setString(2, req.getParameter("detail"));
-						ps.setString(3, req.getParameter("imp"));
-
-					}else {
-
-						//SQL
-						sql = "INSERT INTO list(title, detail, imp, limit_date)VALUES(?,?,?,?)";
-
-						//INSERT準備
-						ps = con.prepareStatement(sql);
-
-						//INSERTにデータをセット
-						ps.setString(1, req.getParameter("title"));
-						ps.setString(2, req.getParameter("detail"));
-						ps.setString(3, req.getParameter("imp"));
-						ps.setString(4, req.getParameter("limit_date"));
-
-					}
-
-					//INSERT実行
-					ps.executeUpdate();
+					DBUtils.close(ps);
+					DBUtils.close(con);
 
 				}catch(Exception e){
-					throw new ServletException(e);
 
-				}finally{
-
-					try{
-						DBUtils.close(ps);
-						DBUtils.close(con);
-
-					}catch(Exception e){
-
-					}
 				}
-				//フォームにリダイレクト
-				resp.sendRedirect("index.html");
+			}
+			//フォームにリダイレクト
+			resp.sendRedirect("index.html");
 		}
-
-
 
 	}
 

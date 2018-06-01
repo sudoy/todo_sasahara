@@ -14,15 +14,20 @@
 		</ul>
 	</div>
 
-	<div class="alert alert-danger alert-dismissible" role="alert">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<strong>エラーが発生しました!</strong>
-		<ul>
-			<li>題名は必須入力です。</li>
-			<li>題名は100文字以内にして下さい。</li>
-			<li>期限は「YYYY/MM/DD」形式で入力して下さい。</li>
-		</ul>
-	</div>
+	<%-- エラー時表示 --%>
+	<c:if test="${errors.size() > 0 }">
+
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<strong>エラーが発生しました!</strong>
+
+			<c:forEach var="error" items="${errors}">
+				<li>${error}</li>
+			</c:forEach>
+
+		</div>
+	</c:if>
+
 
 	<strong>登録フォーム</strong><hr>
 
@@ -31,14 +36,14 @@
 		<div class="form-group">
 			<label for="title" class="col-sm-2 control-label">題名</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" name="title" id="title" placeholder="題名" value="">
+				<input type="text" class="form-control" name="title" id="title" placeholder="題名" value="${param.title }">
 			</div>
 		</div>
 
 		<div class="form-group">
 			<label for="detail" class="col-sm-2 control-label">詳細</label>
 			<div class="col-sm-10">
-				<textarea class="form-control" name="detail" rows="3" id="detail" placeholder="詳細"></textarea>
+				<textarea class="form-control" name="detail" rows="3" id="detail" placeholder="詳細">${param.detail }</textarea>
 			</div>
 		</div>
 
@@ -47,19 +52,19 @@
 			<div class="radio">
 				<div class="col-sm-offset-2">
 					<label>
-						<input type="radio" name="imp" id="impRadio" value="★★★" checked>
+						<input type="radio" name="imp" id="impRadio" value="★★★" ${param.imp eq '★★★' ? 'checked' : '' || param.imp == null ? 'checked' : ''} >
 						★★★
 					</label>
 				</div>
 				<div class="col-sm-offset-2">
 					<label>
-						<input type="radio" name="imp" id="impRadio" value="★★">
+						<input type="radio" name="imp" id="impRadio" value="★★"  ${param.imp eq '★★' ? 'checked' : ''}>
 						★★
 					</label>
 				</div>
 				<div class="col-sm-offset-2">
 					<label>
-						<input type="radio" name="imp" id="impRadio" value="★">
+						<input type="radio" name="imp" id="impRadio" value="★" ${param.imp eq '★' ? 'checked' : ''}>
 						★
 					</label>
 				</div>
@@ -70,7 +75,7 @@
 		<div class="form-group">
 			<label for="limit" class="col-sm-2 control-label">期限</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" name="limit_date" id="limit" placeholder="期限" value="">
+				<input type="text" class="form-control" name="limit_date" id="limit" placeholder="期限" value="${param.limitDate }">
 			</div>
 		</div>
 
