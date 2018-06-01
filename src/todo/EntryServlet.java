@@ -50,7 +50,7 @@ public class EntryServlet extends HttpServlet {
 
 		}
 
-		if(req.getParameter("limit_date") != "") {
+		if(!req.getParameter("limit_date").equals("")) {
 			//形式の判定
 			try {
 				DateFormat format=new SimpleDateFormat("yyyy/MM/dd");

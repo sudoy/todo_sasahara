@@ -52,7 +52,7 @@
 			<div class="radio">
 				<div class="col-sm-offset-2">
 					<label>
-						<input type="radio" name="imp" id="impRadio" value="★★★" ${param.imp eq '★★★' ? 'checked' : '' || param.imp == null ? 'checked' : ''} >
+						<input type="radio" name="imp" id="impRadio" value="★★★" ${ param.imp eq '★★★' ? 'checked' : param.imp == null ? 'checked' : ''} >
 						★★★
 					</label>
 				</div>
