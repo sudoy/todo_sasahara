@@ -9,10 +9,11 @@ public class Todo {
 	private String imp;
 	private Date limitDate;
 
-	public Todo(int id, String title, String imp, Date limitDate) {
+	public Todo(int id, String title, String detail, String imp, Date limitDate) {
 		super();
 		this.id = id;
 		this.title = title;
+		this.detail = detail;
 		this.imp = imp;
 		this.limitDate = limitDate;
 	}

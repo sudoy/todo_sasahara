@@ -33,7 +33,7 @@ public class IndexServlet extends HttpServlet {
 			con = DBUtils.getConnection();
 
 			//SQL
-			sql = "SELECT id, title, imp, limit_date FROM list ORDER BY id";
+			sql = "SELECT id, title, detail, imp, limit_date FROM list ORDER BY id";
 
 			//SELECT命令の準備
 			ps = con.prepareStatement(sql);
@@ -47,10 +47,12 @@ public class IndexServlet extends HttpServlet {
 				Todo a = new Todo(
 						rs.getInt("id"),
 						rs.getString("title"),
+						rs.getString("detail"),
 						rs.getString("imp"),
 						rs.getDate("limit_date"));
 
 				list.add(a);
+
 			}
 
 			//JSPへ渡す
@@ -62,6 +64,7 @@ public class IndexServlet extends HttpServlet {
 
 		}catch(Exception e){
 			throw new ServletException(e);
+
 		}finally {
 			try{
 				DBUtils.close(rs);

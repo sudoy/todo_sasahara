@@ -39,7 +39,6 @@
 				<td>${todo.imp}</td>
 				<td>
 					${HTMLUtils.dateFormat(todo.limitDate)}
-
 				</td>
 			</tr>
 		</c:forEach>
