@@ -9,6 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
 
 
 	<!--[if lt IE 9]>
@@ -26,24 +27,12 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="index.html">Todoリスト</a>
 			</div>
-
-			<div class="btn-group pull-right">
-				<a class="btn btn-primary dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					名前<span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu">
-					<li><a href="logout.html">ログアウト</a></li>
-				</ul>
-			</div>
 		</div>
 	</div>
-
 </nav>
 
+
+
 <div class="container ">
-
-<jsp:include page="_success.jsp" />
-
-<jsp:include page="_error.jsp" />
 
 	<div class="row">

@@ -83,51 +83,60 @@ public class UpdateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		HttpSession session = req.getSession();
+		Object log = session.getAttribute("login");
+
 		Connection con = null;
 		PreparedStatement ps = null;
 		String sql = null;
 		ResultSet rs = null;
 
-		try {
-			//データベース接続
-			con = DBUtils.getConnection();
+		if (log == null){
+			//未承認
+			getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
 
-			//GETパラメータを取得
-			String id = req.getParameter("id");
+		}else {
+			try {
+				//データベース接続
+				con = DBUtils.getConnection();
 
-			//SQL
-			sql = "SELECT id, title, detail, imp, limit_date FROM list WHERE id = ?";
+				//GETパラメータを取得
+				String id = req.getParameter("id");
 
-			//SELECT準備
-			ps = con.prepareStatement(sql);
+				//SQL
+				sql = "SELECT id, title, detail, imp, limit_date FROM list WHERE id = ?";
 
-			//パラメータをセット
-			ps.setString(1, id);
+				//SELECT準備
+				ps = con.prepareStatement(sql);
 
-			//SELECTを実行
-			rs = ps.executeQuery();
+				//パラメータをセット
+				ps.setString(1, id);
 
-			rs.next();
+				//SELECTを実行
+				rs = ps.executeQuery();
 
-			Todo list = new Todo(
-					rs.getInt("id"),
-					rs.getString("title"),
-					rs.getString("detail"),
-					rs.getString("imp"),
-					rs.getDate("limit_date"));
+				rs.next();
 
-			req.setAttribute("list", list);
+				Todo list = new Todo(
+						rs.getInt("id"),
+						rs.getString("title"),
+						rs.getString("detail"),
+						rs.getString("imp"),
+						rs.getDate("limit_date"));
 
-		}catch(Exception e){
-			throw new ServletException(e);
-		}finally{
+				req.setAttribute("list", list);
 
-			try{
-				DBUtils.close(rs);
-				DBUtils.close(ps);
-				DBUtils.close(con);
 			}catch(Exception e){
+				throw new ServletException(e);
+			}finally{
 
+				try{
+					DBUtils.close(rs);
+					DBUtils.close(ps);
+					DBUtils.close(con);
+				}catch(Exception e){
+
+				}
 			}
 		}
 
