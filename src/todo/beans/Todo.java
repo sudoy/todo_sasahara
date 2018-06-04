@@ -18,6 +18,14 @@ public class Todo {
 		this.limitDate = limitDate;
 	}
 
+	public Todo(int id, String title, String detail, String imp) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.detail = detail;
+		this.imp = imp;
+	}
+
 	public int getId() {
 		return id;
 	}

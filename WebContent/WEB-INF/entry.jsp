@@ -6,29 +6,6 @@
 
 <jsp:include page="header.jsp" />
 
-	<div class="alert alert-success alert-dismissible" role="alert">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<strong>完了しました!</strong>
-		<ul>
-			<li>No.27のTodoを更新しました。</li>
-		</ul>
-	</div>
-
-	<%-- エラー時表示 --%>
-	<c:if test="${errors.size() > 0 }">
-
-		<div class="alert alert-danger alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<strong>エラーが発生しました!</strong>
-
-			<c:forEach var="error" items="${errors}">
-				<li>${error}</li>
-			</c:forEach>
-
-		</div>
-	</c:if>
-
-
 	<strong>登録フォーム</strong><hr>
 
 	<form class="form-horizontal" action="entry.html" method="POST">
@@ -75,7 +52,7 @@
 		<div class="form-group">
 			<label for="limit" class="col-sm-2 control-label">期限</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" name="limit_date" id="limit" placeholder="期限" value="${param.limitDate }">
+				<input type="text" class="form-control" name="limit_date" id="limit" placeholder="期限" value="${param.limit_date }">
 			</div>
 		</div>
 

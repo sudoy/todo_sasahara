@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import todo.utils.DBUtils;
 
@@ -53,8 +54,16 @@ public class EntryServlet extends HttpServlet {
 		if(!req.getParameter("limit_date").equals("")) {
 			//形式の判定
 			try {
-				DateFormat format=new SimpleDateFormat("yyyy/MM/dd");
-			    format.parse(req.getParameter("limit_date"));
+				DateFormat df=new SimpleDateFormat("yyyy/MM/dd");
+
+			    String s1 = req.getParameter("limit_date");
+			    String s2 = df.format(df.parse(s1));
+
+			    if(s1.equals(s2)) {
+
+			    }else {
+			    	errors.add("期限は「YYYY/MM/DD」形式で入力して下さい。");
+			    }
 
 			}catch(ParseException p) {
 
@@ -79,13 +88,14 @@ public class EntryServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		req.setCharacterEncoding("utf-8");
+		HttpSession session = req.getSession();
 
 		List<String> errors = validate(req, resp);
 
 
 		if(errors.size() > 0) {
 			//エラー処理
-			req.setAttribute("errors", errors);
+			session.setAttribute("errors", errors);
 			getServletContext().getRequestDispatcher("/WEB-INF/entry.jsp").forward(req, resp);
 		}else {
 
@@ -130,6 +140,14 @@ public class EntryServlet extends HttpServlet {
 				//INSERT実行
 				ps.executeUpdate();
 
+				//遷移
+				List<String> successes = new ArrayList<>();
+				successes.add("追加しました。");
+				session.setAttribute("successes", successes);
+
+				//フォームにリダイレクト
+				resp.sendRedirect("index.html");
+
 			}catch(Exception e){
 				throw new ServletException(e);
 
@@ -143,8 +161,7 @@ public class EntryServlet extends HttpServlet {
 
 				}
 			}
-			//フォームにリダイレクト
-			resp.sendRedirect("index.html");
+
 		}
 
 	}

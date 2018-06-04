@@ -32,4 +32,8 @@
 
 <div class="container ">
 
+<jsp:include page="_success.jsp" />
+
+<jsp:include page="_error.jsp" />
+
 	<div class="row">
