@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import todo.utils.DBUtils;
+import todo.utils.HTMLUtils;
 
 @WebServlet("/delete.html")
 public class DeleteServlet extends HttpServlet {
@@ -36,73 +37,68 @@ public class DeleteServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		if(!HTMLUtils.checkLogin(req, resp)) {
+			return;
+		}
+
 		req.setCharacterEncoding("utf-8");
 		HttpSession session = req.getSession();
-		Object log = session.getAttribute("login");
 
 		List<String> errors = validate(req, resp);
 
 
-		if (log == null){
-			//未承認
-			getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
+
+		if(errors.size() > 0) {
+			//エラー処理
+			session.setAttribute("errors", errors);
+
+			//リダイレクト
+			resp.sendRedirect("index.html");
 
 		}else {
-			if(errors.size() > 0) {
-				//エラー処理
-				session.setAttribute("errors", errors);
 
-				//リダイレクト
+			Connection con = null;
+			PreparedStatement ps = null;
+			String sql = null;
+
+			try {
+				con = DBUtils.getConnection();
+
+				sql = "DELETE FROM list WHERE id = ?";
+
+				//準備
+				ps = con.prepareStatement(sql);
+
+				//データをセット
+				ps.setString(1, req.getParameter("id"));
+
+				//実行
+				ps.executeUpdate();
+
+
+				//遷移
+				List<String> successes = new ArrayList<>();
+				successes.add("削除しました。");
+				session.setAttribute("successes", successes);
+
+				//フォームにリダイレクト
 				resp.sendRedirect("index.html");
 
-			}else {
 
-				Connection con = null;
-				PreparedStatement ps = null;
-				String sql = null;
+			}catch(Exception e){
+				throw new ServletException(e);
 
-				try {
-					con = DBUtils.getConnection();
+			}finally{
 
-					sql = "DELETE FROM list WHERE id = ?";
-
-					//準備
-					ps = con.prepareStatement(sql);
-
-					//データをセット
-					ps.setString(1, req.getParameter("id"));
-
-					//実行
-					ps.executeUpdate();
-
-
-					//遷移
-					List<String> successes = new ArrayList<>();
-					successes.add("削除しました。");
-					session.setAttribute("successes", successes);
-
-					//フォームにリダイレクト
-					resp.sendRedirect("index.html");
-
+				try{
+					DBUtils.close(ps);
+					DBUtils.close(con);
 
 				}catch(Exception e){
-					throw new ServletException(e);
 
-				}finally{
-
-					try{
-						DBUtils.close(ps);
-						DBUtils.close(con);
-
-					}catch(Exception e){
-
-					}
 				}
-
-
 			}
+
 		}
-
-
 	}
 }

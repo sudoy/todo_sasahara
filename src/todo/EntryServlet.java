@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import todo.utils.DBUtils;
+import todo.utils.HTMLUtils;
 
 
 @WebServlet("/entry.html")
@@ -79,28 +80,33 @@ public class EntryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		if(!HTMLUtils.checkLogin(req, resp)) {
+			return;
+		}
+
 		HttpSession session = req.getSession();
 		Object log = session.getAttribute("login");
 
-		if (log == null){
-			//未承認
-			getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
-
-		}
 
 		//フォワード
 		getServletContext().getRequestDispatcher("/WEB-INF/entry.jsp").forward(req, resp);
+
+
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		if(!HTMLUtils.checkLogin(req, resp)) {
+			return;
+		}
+
 		req.setCharacterEncoding("utf-8");
 		HttpSession session = req.getSession();
-		Object log = session.getAttribute("login");
 
 		List<String> errors = validate(req, resp);
+
 
 		if(errors.size() > 0) {
 			//エラー処理

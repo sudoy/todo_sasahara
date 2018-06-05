@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import todo.beans.Todo;
 import todo.utils.DBUtils;
+import todo.utils.HTMLUtils;
 
 @WebServlet("/update.html")
 public class UpdateServlet extends HttpServlet {
@@ -83,75 +84,83 @@ public class UpdateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		if(!HTMLUtils.checkLogin(req, resp)) {
+			return;
+		}
+
 		HttpSession session = req.getSession();
-		Object log = session.getAttribute("login");
+
 
 		Connection con = null;
 		PreparedStatement ps = null;
 		String sql = null;
 		ResultSet rs = null;
 
-		if (log == null){
-			//未承認
-			getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
 
-		}else {
-			try {
-				//データベース接続
-				con = DBUtils.getConnection();
+		try {
+			//データベース接続
+			con = DBUtils.getConnection();
 
-				//GETパラメータを取得
-				String id = req.getParameter("id");
+			//GETパラメータを取得
+			String id = req.getParameter("id");
 
-				//SQL
-				sql = "SELECT id, title, detail, imp, limit_date FROM list WHERE id = ?";
+			//SQL
+			sql = "SELECT id, title, detail, imp, limit_date FROM list WHERE id = ?";
 
-				//SELECT準備
-				ps = con.prepareStatement(sql);
+			//SELECT準備
+			ps = con.prepareStatement(sql);
 
-				//パラメータをセット
-				ps.setString(1, id);
+			//パラメータをセット
+			ps.setString(1, id);
 
-				//SELECTを実行
-				rs = ps.executeQuery();
+			//SELECTを実行
+			rs = ps.executeQuery();
 
-				rs.next();
+			rs.next();
 
-				Todo list = new Todo(
-						rs.getInt("id"),
-						rs.getString("title"),
-						rs.getString("detail"),
-						rs.getString("imp"),
-						rs.getDate("limit_date"));
+			Todo list = new Todo(
+					rs.getInt("id"),
+					rs.getString("title"),
+					rs.getString("detail"),
+					rs.getString("imp"),
+					rs.getDate("limit_date"));
 
-				req.setAttribute("list", list);
+			req.setAttribute("list", list);
 
+			//フォワード
+			getServletContext().getRequestDispatcher("/WEB-INF/update.jsp").forward(req, resp);
+
+		}catch(Exception e){
+			throw new ServletException(e);
+		}finally{
+
+			try{
+				DBUtils.close(rs);
+				DBUtils.close(ps);
+				DBUtils.close(con);
 			}catch(Exception e){
-				throw new ServletException(e);
-			}finally{
 
-				try{
-					DBUtils.close(rs);
-					DBUtils.close(ps);
-					DBUtils.close(con);
-				}catch(Exception e){
-
-				}
 			}
 		}
 
-		//フォワード
-		getServletContext().getRequestDispatcher("/WEB-INF/update.jsp").forward(req, resp);
+
+
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		if(!HTMLUtils.checkLogin(req, resp)) {
+			return;
+		}
+
 		req.setCharacterEncoding("utf-8");
 		HttpSession session = req.getSession();
+		Object log = session.getAttribute("login");
 
 		List<String> errors = validate(req, resp);
+
 
 		if(errors.size() > 0) {
 			//エラー処理
@@ -194,6 +203,9 @@ public class UpdateServlet extends HttpServlet {
 				successes.add("更新しました。");
 				session.setAttribute("successes", successes);
 
+				//リダイレクト
+				resp.sendRedirect("index.html");
+
 
 			}catch(Exception e){
 				throw new ServletException(e);
@@ -209,10 +221,8 @@ public class UpdateServlet extends HttpServlet {
 				}
 			}
 
-			//リダイレクト
-			resp.sendRedirect("index.html");
-		}
 
+		}
 
 	}
 

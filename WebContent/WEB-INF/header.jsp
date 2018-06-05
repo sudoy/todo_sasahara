@@ -1,4 +1,5 @@
 <%@ page pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -27,14 +28,16 @@
 				<a class="navbar-brand" href="index.html">Todoリスト</a>
 			</div>
 
-			<div class="btn-group pull-right">
-				<a class="btn btn-primary dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					名前<span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu">
-					<li><a href="logout.html">ログアウト</a></li>
-				</ul>
-			</div>
+			<c:if test="${login ne null}">
+				<div class="btn-group pull-right login-top">
+					<a class="btn btn-primary dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						${login.name }<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="logout.html">ログアウト</a></li>
+					</ul>
+				</div>
+			</c:if>
 		</div>
 	</div>
 

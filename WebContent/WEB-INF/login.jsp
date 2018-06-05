@@ -11,6 +11,7 @@
 	<form class="form-horizontal" method="post" action="login.html">
 		<div class="login-top">ログイン</div>
 
+		<jsp:include page="_success.jsp" />
 		<jsp:include page="_error.jsp" />
 
 		<div class="form-group">
@@ -23,7 +24,7 @@
 		<div class="form-group">
 			<label for="pass" class="col-sm-4 control-label">パスワード</label>
 			<div class="col-sm-7">
-				<input type="password" class="form-control" name="pass" id="pass" placeholder="パスワード" value="${param.pass }">
+				<input type="password" class="form-control" name="pass" id="pass" placeholder="パスワード" value="">
 			</div>
 		</div>
 

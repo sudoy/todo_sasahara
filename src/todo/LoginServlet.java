@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import todo.beans.User;
 import todo.utils.DBUtils;
 
 @WebServlet("/login.html")
@@ -43,7 +44,7 @@ public class LoginServlet extends HttpServlet {
 			con = DBUtils.getConnection();
 
 			//SQL
-			sql = "SELECT mail, pass FROM user WHERE mail = ? AND pass = ?";
+			sql = "SELECT id, name, mail, pass  FROM users WHERE mail = ? AND pass = MD5(?)";
 
 			//SELECT命令の準備
 			ps = con.prepareStatement(sql);
@@ -57,7 +58,11 @@ public class LoginServlet extends HttpServlet {
 
 			if (rs.next()){
 				//ログイン成功時
-				String login = "OK";
+				User login = new User(rs.getInt("id"),
+						rs.getString("name"),
+						rs.getString("mail"),
+						rs.getString("pass"));
+
 				session.setAttribute("login", login);
 				resp.sendRedirect("index.html");
 			}else{

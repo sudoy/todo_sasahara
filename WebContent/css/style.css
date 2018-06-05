@@ -1,6 +1,9 @@
 .navbar-default{
 	background-color:#fff;
 }
+.login-top{
+	margin : 10px;
+}
 body{
 	background-color:#f8f8f8;
 }
